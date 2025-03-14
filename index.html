@@ -1,20 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Connection</title>
+    <title>Connexion</title>
 </head>
 <body>
-<div id="div_page_conn">
     <h1>Se connecter</h1>     
-    <form id="form_con" method="POST" action="../controlleur/fct_connect.php">
-        <input id="in_conn_id" class="log" type="email" name="login" required="required" placeholder="Identifiant">
-
-        <input id="in_conn_mdp" class="log" type="password" name="passwd" required="required" placeholder="Mot de passe">
-        <div id="btn_valid_conn"><label for="envoi">Se connecter</label></div>
-        <input id="envoi" name="envoi" type="submit" value="Se connecter" style="display:none"></div>
+    <form method="POST" action="/login">
+        <input type="email" name="login" required placeholder="Identifiant">
+        <input type="password" name="passwd" required placeholder="Mot de passe">
+        <button type="submit">Se connecter</button>
     </form>
-</div>   
 </body>
 </html>
