@@ -1,5 +1,7 @@
 const express = require("express");
 
+const crudP = require("./js/CRUD_Personnage");
+
 const app = express();
 const PORT = 3000;
 
@@ -17,6 +19,8 @@ app.post("/login", (req, res) => {
 
     if (login === "test@email.com" && passwd === "1234") {
         res.send("Connexion réussie !");
+        crudP.insert_perso("man", "donatien", "email@", "motdepasse");
+
     } else {
         res.send("Identifiants incorrects !");
     }
