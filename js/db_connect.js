@@ -11,3 +11,6 @@ conn.connect(function(err) {
   console.log("Connected!");
 });
 
+module.exports = {
+  conn
+};
