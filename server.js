@@ -16,14 +16,15 @@ app.get("/", (req, res) => {
 // Traiter le formulaire
 app.post("/login", (req, res) => {
     const { login, passwd } = req.body;
+    (async () => {
+        let user =  await crudP.select_perso_connexion(login, passwd);
 
-    if (login === "test@email.com" && passwd === "1234") {
-        res.send("Connexion réussie !");
-        crudP.insert_perso("man", "donatien", "email@", "motdepasse");
-
-    } else {
-        res.send("Identifiants incorrects !");
-    }
+        if (user.length > 0){
+            res.send(user[0]);
+        } else {
+            res.send("Identifiants incorrects !");
+        }
+    })();
 });
 
 // Lancer le serveur
