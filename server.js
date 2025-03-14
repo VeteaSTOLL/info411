@@ -1,11 +1,10 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 
 const app = express();
 const PORT = 3000;
 
 // Middleware pour traiter les données du formulaire
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 // Servir le fichier HTML
 app.get("/", (req, res) => {
