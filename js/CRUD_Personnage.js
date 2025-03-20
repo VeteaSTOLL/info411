@@ -7,7 +7,7 @@ function insert_perso(nom, prenom, email, mdp){
 }
 
 function select_perso(id){
-    var sql = "SELECT * FROM Personnage WHERE id='" + id + "'";
+    var sql = "SELECT nom, prenom, email FROM Personnage WHERE id='" + id + "'";
     return new Promise((resolve, reject) => {
         connexion.conn.query(sql, (err, result) => {
             if (err) {
@@ -20,7 +20,7 @@ function select_perso(id){
 }
 
 function select_perso_connexion(email, mdp){
-    var sql = "SELECT * FROM Personnage WHERE email='" + email + "' AND mdp='" + mdp + "'";
+    var sql = "SELECT id FROM Personnage WHERE email='" + email + "' AND mdp='" + mdp + "'";
     return new Promise((resolve, reject) => {
         connexion.conn.query(sql, (err, result) => {
             if (err) {
