@@ -9,14 +9,9 @@ const PORT = 3000;
 
 app.set("trust proxy", 1);
 
-// app.use((req, res, next) => {
-//     console.log('Session actuelle:', req.session);
-//     next();
-// });
-
 // Pour fetch
 app.use(cors({
-    origin: 'http://localhost', // Remplace par l'URL de ton front-end
+    origin: 'http://localhost:8080',
     credentials: true, // Permet l'envoi des cookies avec les requêtes
 })); 
 // Middleware pour traiter les données du formulaire
@@ -28,8 +23,8 @@ app.use(session({
     saveUninitialized: false,
     httpOnly: true,
     cookie: {
-        secure: false, // True en production si HTTPS
-        sameSite: true, // Ajuste selon tes besoins
+        secure: false, // True si HTTPS
+        sameSite: true,
         maxAge: 1000 * 60 * 60 * 24 // 1 jour
     }
 }));
