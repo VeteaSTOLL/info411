@@ -7,7 +7,7 @@ function insert_perso(nom, prenom, email, mdp){
 }
 
 function select_perso(id){
-    var sql = "SELECT nom, prenom, email FROM Personnage WHERE id='" + id + "'";
+    var sql = "SELECT id, nom, prenom, email FROM Personnage WHERE id='" + id + "'";
     return new Promise((resolve, reject) => {
         connexion.conn.query(sql, (err, result) => {
             if (err) {

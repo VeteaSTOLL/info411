@@ -1,8 +1,11 @@
+// Middlewares
+
 const cors = require("cors");
 const express = require("express");
 const session = require("express-session");
 const WebSocket = require('ws');
 
+// Includes
 const crudP = require("./js/CRUD_Personnage");
 const data = require("./js/server_data");
 
@@ -11,14 +14,14 @@ const PORT = 3000;
 
 app.set("trust proxy", 1);
 
-// Pour fetch
+// Utile pour fetch
 app.use(cors({
     origin: 'http://localhost:8080',
     credentials: true, // Permet l'envoi des cookies avec les requêtes
 })); 
-// Middleware pour traiter les données du formulaire
+// Utile pour traiter les données du formulaire
 app.use(express.urlencoded({ extended: true }));
-// Pour les sessions
+// Utile pour les sessions
 app.use(session({
     secret: "noahleloser",
     resave: false,
@@ -30,19 +33,24 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24 // 1 jour
     }
 }));
+// Utile pour pouvoir lire le json
+app.use(express.json());
 
 // Traiter le formulaire
 app.post("/login", (req, res) => {
+    // Récupère les données du formulaire
     const { login, passwd } = req.body;
     (async () => {
+        // Récupère la liste des utilisateurs qui ont cet identifiant et ce mot de passe (normalement une liste de taille 1)
         let user =  await crudP.select_perso_connexion(login, passwd);
 
         if (user.length > 0){
-            //demarre la session 
+            // Initialise une variable de session qui correspond à l'id de l'utilisateur
             req.session.userId = user[0].id;
+            // Sauvegarde la session
             req.session.save(err => {
                 if (err) throw err;
-                //renvoie la reponse une fois que la session est demarree
+                // Renvoie la reponse une fois que la session est demarree
                 res.send({session_opened:true});
             });
         } else {
@@ -52,43 +60,56 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/session_user", (req, res) => {
-    if (typeof req.session.userId !== 'undefined'){
+    // Renvoie l'utilisateur de la session
+    if (req.session.userId){
         (async () => {
             let user = (await crudP.select_perso(req.session.userId))[0];
             res.send(user);
-        })();        
-
+        })();
     } else {
         res.send("{}");
     }
 });
 
-// Lancer le serveur
+app.post("/users", (req, res) => {
+    // Renvoie les utilisateur qui ont été listés dans un array, ex: [1, 2, 10, 12]
+
+    const arr = req.body;
+    res.send(JSON.stringify(data.get_users(arr)));
+});
+
+// Lance le serveur
 const server = app.listen(PORT, () => {
     console.log(`Serveur en écoute sur http://localhost:${PORT}`);
 });
+
 // PARTIE WEBSOCKET
 const wss = new WebSocket.Server({ server });
 
 wss.on('connection', (ws) => {
-    console.log('Nouvelle connexion WebSocket');
+    // Connexion du client
 
-    ws.send('Bienvenue sur le WebSocket Server !');
+    console.log('Client connecté');
 
     ws.on('message', (message) => {
-        console.log(`Message reçu: ${message}`);
-
-        // Broadcast à tous les clients
-        // wss.clients.forEach(client => {
-        //     if (client.readyState === WebSocket.OPEN) {
-        //         client.send(`Message relayé: ${message}`);
-        //     }
-        // });
+        // Gestion du message reçu
+        let message_json = JSON.parse(message);
+        // Le message doit être dee type : {"id":_,"pos":{"x":_,"y":_}}
+        data.insert_pos(message_json.id, message_json.pos);
     });
+
+    // Envoie la liste des positions à tous les utilisateurs toutes les 2 secondes
+    const interval = setInterval(() => {
+        wss.clients.forEach(client => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify(data.position_table));
+            }
+        });
+    }, 2000);
 
     ws.on('close', () => {
         console.log('Client déconnecté');
+        clearInterval(interval); // Supprimer l'intervalle quand le client se déconnecte
     });
+
 });
-
-

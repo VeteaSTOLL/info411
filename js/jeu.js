@@ -1,27 +1,59 @@
+var user; 
 (async () => {
     await fetch("http://localhost:3000/session_user", { credentials:'include' })
     .then(response => response.json())
     .then(data => {
-        if(typeof data.nom !== 'undefined'){
-            document.getElementById("nom").innerText = data.nom;
-            document.getElementById("prenom").innerText = data.prenom;
-            document.getElementById("email").innerText = data.email;            
+        if(data.id){
+            user = data;
+            document.getElementById("nom").innerText = user.nom;
+            document.getElementById("prenom").innerText = user.prenom;
+            document.getElementById("email").innerText = user.email;
         } else {
             window.location.replace("./connexion.html");
         }
     });
 })();
 
-const socket = new WebSocket('ws://localhost:3000');
+var user_table = {};
+var position_table = {};
 
-socket.onopen = () => {
-    console.log('Connecté au WebSocket');
-};
+async function import_users (list) {
+    await fetch("http://localhost:3000/users", {
+        credentials:'include',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(list)
+    })
+    .then(response => response.json())
+    .then(data => {
+        data.forEach(user => {
+            user_table[user.id] = user;
+        });
+    });
+}
+
+function update_user_table(){
+    let unknown = [];
+    for (const [key, value] of Object.entries(position_table)) {
+        if (!user_table[key]){
+            unknown.push(key);
+        }
+    }
+    if (unknown.length > 0) {
+        import_users(unknown);
+    }
+}
+
+const socket = new WebSocket('ws://localhost:3000');
 
 socket.onmessage = (event) => {
     console.log(event.data);
+    position_table = JSON.parse(event.data);
+    update_user_table();
 };
 
 function sendMessage() {
-    socket.send("yo !");
+    socket.send(JSON.stringify({id:user.id, pos:{x:0,y:0}}));
 }
