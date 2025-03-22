@@ -5,9 +5,6 @@ var user;
     .then(data => {
         if(data.id){
             user = data;
-            document.getElementById("nom").innerText = user.nom;
-            document.getElementById("prenom").innerText = user.prenom;
-            document.getElementById("email").innerText = user.email;
         } else {
             window.location.replace("./connexion.html");
         }
@@ -49,7 +46,6 @@ function update_user_table(){
 const socket = new WebSocket('ws://localhost:3000');
 
 socket.onmessage = (event) => {
-    console.log(event.data);
     position_table = JSON.parse(event.data);
     update_user_table();
 };
