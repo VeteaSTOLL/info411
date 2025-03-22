@@ -1,8 +1,10 @@
 const cors = require("cors");
 const express = require("express");
 const session = require("express-session");
+const WebSocket = require('ws');
 
 const crudP = require("./js/CRUD_Personnage");
+const data = require("./js/server_data");
 
 const app = express();
 const PORT = 3000;
@@ -36,7 +38,7 @@ app.post("/login", (req, res) => {
         let user =  await crudP.select_perso_connexion(login, passwd);
 
         if (user.length > 0){
-            //demarre la session
+            //demarre la session 
             req.session.userId = user[0].id;
             req.session.save(err => {
                 if (err) throw err;
@@ -62,6 +64,31 @@ app.get("/session_user", (req, res) => {
 });
 
 // Lancer le serveur
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Serveur en écoute sur http://localhost:${PORT}`);
 });
+// PARTIE WEBSOCKET
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (ws) => {
+    console.log('Nouvelle connexion WebSocket');
+
+    ws.send('Bienvenue sur le WebSocket Server !');
+
+    ws.on('message', (message) => {
+        console.log(`Message reçu: ${message}`);
+
+        // Broadcast à tous les clients
+        // wss.clients.forEach(client => {
+        //     if (client.readyState === WebSocket.OPEN) {
+        //         client.send(`Message relayé: ${message}`);
+        //     }
+        // });
+    });
+
+    ws.on('close', () => {
+        console.log('Client déconnecté');
+    });
+});
+
+
