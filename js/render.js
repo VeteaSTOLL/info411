@@ -80,8 +80,17 @@ function animate() {
     camera.position.z = player.position.z + 4;
 
     for (const [id, p] of Object.entries(otherPlayers)) {
-        p.position.x = position_table[id].x;
-        p.position.z = -position_table[id].y;
+        let destination = new THREE.Vector3(position_table[id].x, p.position.y, -position_table[id].y);
+        let direction = new THREE.Vector3();
+        direction.subVectors(destination, p.position);
+        if (direction.length() < speed * dt){
+            p.position.copy(destination);
+        } else {
+            direction.normalize();
+            direction.multiplyScalar(speed * dt);
+            p.position.add(direction);
+        }
+        
 
         let tag_pos = p.position.clone();
         tag_pos.y += 1.5;
