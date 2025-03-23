@@ -55,7 +55,13 @@ floor.receiveShadow = true;
 
 player.position.y = 1;
 
+const clock = new THREE.Clock;
+var dt = 0;
+
 function animate() {
+    dt = clock.getDelta();
+    updatePos(dt);
+
     player.position.x = playerCoords.x;
     player.position.z = -playerCoords.y;
 

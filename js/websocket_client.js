@@ -1,5 +1,5 @@
 var user; 
-(async () => {
+async function initUser() {
     await fetch("http://localhost:3000/session_user", { credentials:'include' })
     .then(response => response.json())
     .then(data => {
@@ -9,7 +9,7 @@ var user;
             window.location.replace("./connexion.html");
         }
     });
-})();
+}
 
 var user_table = {};
 var position_table = {};
@@ -46,8 +46,10 @@ function update_user_table(){
 const socket = new WebSocket('ws://localhost:3000');
 
 socket.onopen = (event) => {
-    sendPosition();
-    initOtherPlayers();
+    (async () => {
+        await initUser();
+        sendPosition();
+    })();
 };
 
 socket.onmessage = (event) => {
