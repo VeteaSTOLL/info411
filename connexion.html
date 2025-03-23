@@ -3,15 +3,19 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/connexion.css">
         <title>Connexion</title>
     </head>
     <body>
-        <h1>Se connecter</h1>     
-        <form id="formulaire">
-            <input type="text" name="login" required placeholder="Identifiant">
-            <input type="password" name="passwd" required placeholder="Mot de passe">
-            <button type="submit">Se connecter</button>
-        </form>
+        <div class="cadre">    
+            <form id="formulaire">
+                <div id="champs_conn">
+                    <input type="text" name="login" required placeholder="Identifiant">
+                    <input type="password" name="passwd" required placeholder="Mot de passe">
+                    <button type="submit">Se connecter</button>
+                </div>
+            </form>
+        </div>
     </body>
 
     <script src="js/connexion.js"></script>
