@@ -60,5 +60,7 @@ socket.onmessage = (event) => {
 };
 
 function sendPosition() {
-    socket.send(JSON.stringify({id:user.id, pos:playerCoords}));
+    if (user){
+        socket.send(JSON.stringify({id:user.id, pos:playerCoords}));
+    }
 }

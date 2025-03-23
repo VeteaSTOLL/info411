@@ -11,9 +11,17 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild( renderer.domElement );
 
-const floorGeometry = new THREE.PlaneGeometry( 10, 10 );
-const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x808080 });
+const texture = new THREE.TextureLoader().load( "./img/texture_herbe.jpg" );
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set( 20, 20 );
+
+const floorGeometry = new THREE.PlaneGeometry( 100, 100 );
+floorGeometry.rotateX( - Math.PI / 2 );
+const floorMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+floorMaterial.map = texture;
 const floor= new THREE.Mesh( floorGeometry, floorMaterial );
+floor.receiveShadow = true;
 scene.add( floor );
 
 const playerGeometry = new THREE.CapsuleGeometry( .5, 1, 8, 16 );
@@ -55,14 +63,21 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
 directionalLight.position.set(5, 5, 5);
 directionalLight.castShadow = true;
 scene.add(directionalLight);
+var setShadowSize=(light1, sz, mapSz)=>{
+    light1.shadow.camera.left = sz;
+    light1.shadow.camera.bottom = sz;
+    light1.shadow.camera.right = -sz;
+    light1.shadow.camera.top = -sz;
+    if(mapSz){
+        light1.shadow.mapSize.set(mapSz,mapSz)
+    }
+}
+setShadowSize(directionalLight,50.0,4096);
 
 
 camera.position.z = 4;
 camera.position.y = 4;
 camera.rotation.x = -0.5;
-
-floor.rotation.x = -Math.PI / 2;
-floor.receiveShadow = true;
 
 player.position.y = 1;
 
