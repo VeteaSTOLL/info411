@@ -45,11 +45,17 @@ function update_user_table(){
 
 const socket = new WebSocket('ws://localhost:3000');
 
+socket.onopen = (event) => {
+    sendPosition();
+    initOtherPlayers();
+};
+
 socket.onmessage = (event) => {
     position_table = JSON.parse(event.data);
     update_user_table();
+    initOtherPlayers();
 };
 
-function sendMessage() {
-    socket.send(JSON.stringify({id:user.id, pos:{x:0,y:0}}));
+function sendPosition() {
+    socket.send(JSON.stringify({id:user.id, pos:playerCoords}));
 }

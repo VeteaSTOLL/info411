@@ -21,6 +21,21 @@ const player = new THREE.Mesh( playerGeometry, playerMaterial );
 player.castShadow = true;
 scene.add( player );
 
+const otherPlayersMaterial = new THREE.MeshStandardMaterial( { color: 0xff3333 } );
+var otherPlayers = {};
+
+export function initOtherPlayers(){
+    for (const [key, value] of Object.entries(position_table)) {
+        if (!otherPlayers[key] && key != user.id){
+            let p = new THREE.Mesh( playerGeometry, otherPlayersMaterial );
+            p.castShadow = true;
+            p.position.y = 1;
+            scene.add(p);
+            otherPlayers[key] = p;
+        }        
+    }
+}
+initOtherPlayers();
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
@@ -41,6 +56,13 @@ floor.receiveShadow = true;
 player.position.y = 1;
 
 function animate() {
+    player.position.x = playerCoords.x;
+    player.position.z = -playerCoords.y;
+
+    for (const [key, value] of Object.entries(otherPlayers)) {
+        value.position.x = position_table[key].x;
+        value.position.z = -position_table[key].y;
+    }
 
 	renderer.render( scene, camera );
 

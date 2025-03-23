@@ -89,8 +89,6 @@ const wss = new WebSocket.Server({ server });
 wss.on('connection', (ws) => {
     // Connexion du client
 
-    console.log('Client connecté');
-
     ws.on('message', (message) => {
         // Gestion du message reçu
         let message_json = JSON.parse(message);
@@ -98,17 +96,12 @@ wss.on('connection', (ws) => {
         data.insert_pos(message_json.id, message_json.pos);
     });
 
-    // Envoie la liste des positions à tous les utilisateurs toutes les 2 secondes
+    // Envoie la liste des positions à tous les utilisateurs toutes les 50 ms
     const interval = setInterval(() => {
-        wss.clients.forEach(client => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify(data.position_table));
-            }
-        });
-    }, 2000);
+        ws.send(JSON.stringify(data.position_table));
+    }, 50);
 
     ws.on('close', () => {
-        console.log('Client déconnecté');
         clearInterval(interval); // Supprimer l'intervalle quand le client se déconnecte
     });
 
