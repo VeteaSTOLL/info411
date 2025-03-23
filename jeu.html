@@ -9,6 +9,7 @@
 		</style>
     </head>
     <body>
+
     </body>
     
     <script type="importmap">
@@ -20,9 +21,11 @@
     </script>
     <script type="module" src="./js/render.js"></script>
     <script type="module">
-        import { initOtherPlayers } from './js/render.js';
+        import { initOtherPlayers, initTags } from './js/render.js';
         window.initOtherPlayers = initOtherPlayers;
+        window.initTags = initTags;
     </script>
     <script src="./js/game_engine.js"></script>
     <script src="./js/websocket_client.js"></script>
+    <script src="./js/ui.js"></script>
 </html>

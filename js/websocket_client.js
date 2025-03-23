@@ -28,6 +28,7 @@ async function import_users (list) {
         data.forEach(user => {
             user_table[user.id] = user;
         });
+        initTags();
     });
 }
 

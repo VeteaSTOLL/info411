@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 const scene = new THREE.Scene();
+scene.background = new THREE.Color( 0xf0f0f0 );
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
 const renderer = new THREE.WebGLRenderer();
@@ -22,20 +23,30 @@ player.castShadow = true;
 scene.add( player );
 
 const otherPlayersMaterial = new THREE.MeshStandardMaterial( { color: 0xff3333 } );
-var otherPlayers = {};
 
+var otherPlayers = {};
 export function initOtherPlayers(){
-    for (const [key, value] of Object.entries(position_table)) {
-        if (!otherPlayers[key] && key != user.id){
+    for (const [id, pos] of Object.entries(position_table)) {
+        if (!otherPlayers[id] && id != user.id){
             let p = new THREE.Mesh( playerGeometry, otherPlayersMaterial );
             p.castShadow = true;
             p.position.y = 1;
             scene.add(p);
-            otherPlayers[key] = p;
+            otherPlayers[id] = p;
         }        
     }
 }
 initOtherPlayers();
+
+var playerTags = {};
+export function initTags(){
+    for (const [id, u] of Object.entries(user_table)) {
+        if (!playerTags[id] && id != user.id){
+            playerTags[id] = creer_texte(u.prenom);
+        }
+    }
+}
+initTags();
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
@@ -65,9 +76,17 @@ function animate() {
     player.position.x = playerCoords.x;
     player.position.z = -playerCoords.y;
 
-    for (const [key, value] of Object.entries(otherPlayers)) {
-        value.position.x = position_table[key].x;
-        value.position.z = -position_table[key].y;
+    camera.position.x = player.position.x;
+    camera.position.z = player.position.z + 4;
+
+    for (const [id, p] of Object.entries(otherPlayers)) {
+        p.position.x = position_table[id].x;
+        p.position.z = -position_table[id].y;
+
+        let tag_pos = p.position.clone();
+        tag_pos.y += 1.5;
+        let sc = screenCoords(tag_pos);
+        set_position(playerTags[id], sc);
     }
 
 	renderer.render( scene, camera );
@@ -79,4 +98,19 @@ function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize( window.innerWidth, window.innerHeight );
+}
+
+function screenCoords(pos) {
+    var vect = new THREE.Vector3();
+    vect = pos.clone();
+    vect.project(camera);
+
+    var width = window.innerWidth, height = window.innerHeight;
+    var widthHalf = width / 2, heightHalf = height / 2;
+
+    vect.x = ( vect.x * widthHalf ) + widthHalf;
+    vect.y = -( vect.y * heightHalf ) + heightHalf;
+    vect.z = camera.position.distanceTo( pos );
+
+    return vect;
 }
