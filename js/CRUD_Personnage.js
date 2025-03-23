@@ -2,8 +2,16 @@ const connexion = require("./db_connect");
 const mysql = require('mysql');
 
 function insert_perso(nom, prenom, email, mdp){
-    var sql = "INSERT INTO Personnage (nom, prenom, email, mdp) VALUES ('"+nom+"', '"+prenom+"', '"+email+"', '"+mdp+"')";
-    connexion.conn.query(sql);
+    var sql = "INSERT INTO Personnage (nom, prenom, email, mdp) VALUES (?,?,?',?)";
+    return new Promise((resolve, reject) => {
+        connexion.conn.query(sql, [nom, prenom, email, mdp], (err, result) => {
+            if (err) {
+                return reject(err);
+            } else {
+                return resolve({result});
+            }
+        });
+    });
 }
 
 function select_perso(id){
@@ -31,7 +39,6 @@ function select_perso_connexion(email, mdp){
         });
     });
 }
-
 
 
 module.exports = {

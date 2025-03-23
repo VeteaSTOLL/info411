@@ -1,0 +1,74 @@
+body{
+    background-image: url("../img/loser_land.png");
+    background-size: cover;
+    background-position: center;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+
+}
+
+.cadre {
+    width: 18vw;
+    height: 32vh;
+    background-color: #ab4b4b;
+    border-radius: 45px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#champs_inscription{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 1.5vh;
+    height: 29vh;
+}
+
+#champs_inscription input{
+    height: 4.2vh;
+    border-radius: 10px;
+    width: 13vw;
+    border: 0px;
+}
+
+#champs_inscription input::placeholder {
+    padding-left: 1em;
+    font-style: italic;
+    font-size: 1.5em;
+}
+
+#champs_inscription button{
+    margin-top: 2.4vh;
+    height: 4vh;
+    width: 13vw;
+    border-radius: 20px;
+    background-color: black;
+    border: 0px;
+    color:white;
+    font-size: large;
+}
+
+#champs_retour{
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items: center;
+    height: 2vh;
+    margin-top:2vh;
+}
+
+#retour_connexion{
+    font-size: 1.6vh;
+    text-decoration: underline;
+}
+
+a{
+    color:black;
+    text-decoration: none;
+}

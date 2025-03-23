@@ -59,6 +59,14 @@ app.post("/login", (req, res) => {
     })();
 });
 
+app.post("/register", (req, res) => {
+    const {login, nom, prenom, passwd } = req.body;
+    
+    (async () => {
+        await crudP.insert_perso(nom, prenom, login, passwd);
+    })()
+});
+
 app.get("/session_user", (req, res) => {
     // Renvoie l'utilisateur de la session
     if (req.session.userId){
