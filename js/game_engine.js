@@ -38,15 +38,21 @@ function mult(vect, n){
 
 function updatePos(dt) {
     let vect = {x:0, y:0};
-    if (isKeyDown('ArrowDown')) {
-        vect.y -= 1;
-    }if (isKeyDown('ArrowUp')) {
-        vect.y += 1;
-    }if (isKeyDown('ArrowLeft')) {
-        vect.x -= 1;
-    }if (isKeyDown('ArrowRight')) {
-        vect.x += 1;
+    if (isKeyDown('KeyS')){
+        multVitesse = 2;
+    } else {
+        multVitesse = 1;
     }
-    playerCoords = add(playerCoords, mult(normalized(vect), speed * dt));
+    console.log(multVitesse);
+    if (isKeyDown('ArrowDown')) {
+        vect.y -= (1);
+    }if (isKeyDown('ArrowUp')) {
+        vect.y += (1);
+    }if (isKeyDown('ArrowLeft')) {
+        vect.x -= (1);
+    }if (isKeyDown('ArrowRight')) {
+        vect.x += (1);
+    }
+    playerCoords = add(playerCoords, mult(normalized(vect), speed * dt * multVitesse));
     sendPosition();
 }
