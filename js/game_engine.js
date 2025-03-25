@@ -43,7 +43,6 @@ function updatePos(dt) {
     } else {
         multVitesse = 1;
     }
-    console.log(multVitesse);
     if (isKeyDown('ArrowDown')) {
         vect.y -= (1);
     }if (isKeyDown('ArrowUp')) {

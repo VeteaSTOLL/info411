@@ -1,17 +1,14 @@
-var mysql = require('mysql');
+const mariadb = require('mariadb');
 
-var conn = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "info411"
-});
-
-conn.connect(function(err) {
-  if (err) throw err;
-  console.log("Connecté à la db");
+const pool = mariadb.createPool({
+  host: 'localhost',
+  port: 3307,
+  user: 'vttvcool', 
+  password: 'tvvtcool', 
+  database: 'info411',
+  connectionLimit: 10
 });
 
 module.exports = {
-  conn
+  pool
 };
