@@ -40,11 +40,11 @@ app.use(express.json());
 app.post("/login", (req, res) => {
     // Récupère les données du formulaire
     const { login, passwd } = req.body;
+
     (async () => {
         // Récupère la liste des utilisateurs qui ont cet identifiant et ce mot de passe (normalement une liste de taille 1)
         let user =  await crudP.select_perso_connexion(login, passwd);
-
-        if (user.length > 0){
+        if (user && user.length > 0){
             // Initialise une variable de session qui correspond à l'id de l'utilisateur
             req.session.userId = user[0].id;
             // Sauvegarde la session
@@ -71,8 +71,12 @@ app.get("/session_user", (req, res) => {
     // Renvoie l'utilisateur de la session
     if (req.session.userId){
         (async () => {
-            let user = (await crudP.select_perso(req.session.userId))[0];
-            res.send(user);
+            let user = await crudP.select_perso(req.session.userId);
+            if (user && user.length > 0) {
+                res.send(user[0]);
+            } else {
+                res.send("{}");
+            }
         })();
     } else {
         res.send("{}");
@@ -96,12 +100,25 @@ const wss = new WebSocket.Server({ server });
 
 wss.on('connection', (ws) => {
     // Connexion du client
+    let id;
 
     ws.on('message', (message) => {
         // Gestion du message reçu
         let message_json = JSON.parse(message);
-        // Le message doit être dee type : {"id":_,"pos":{"x":_,"y":_}}
-        data.insert_pos(message_json.id, message_json.pos);
+        // Le message doit être dee type : {"header":___, "autreVariable":_}
+        switch (message_json.header) {
+        case 'updatePos':
+            if (id) {
+                data.insert_pos(message_json.id, message_json.pos);
+            }
+            break;
+        case 'authentification':
+            id = message_json.id;
+            break;
+        case 'chat':
+            // envoyer en broadcast le message du chat
+            break;
+        }
     });
 
     // Envoie la liste des positions à tous les utilisateurs toutes les 50 ms
@@ -110,6 +127,10 @@ wss.on('connection', (ws) => {
     }, 50);
 
     ws.on('close', () => {
+        if (id){
+            data.delete_pos(id);
+            data.delete_user(id);
+        }
         clearInterval(interval); // Supprimer l'intervalle quand le client se déconnecte
     });
 

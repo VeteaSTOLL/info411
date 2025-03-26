@@ -11,6 +11,5 @@ document.getElementById("formulaire").addEventListener("submit", async function(
         }
     });
 
-    window.location.replace("./connexion.html");
-    
+    window.location.replace("./connexion.html");    
 });

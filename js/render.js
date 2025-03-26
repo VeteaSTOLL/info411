@@ -33,28 +33,43 @@ scene.add( player );
 const otherPlayersMaterial = new THREE.MeshStandardMaterial( { color: 0xff3333 } );
 
 var otherPlayers = {};
-export function initOtherPlayers(){
+export function updateOtherPlayers(){
     for (const [id, pos] of Object.entries(position_table)) {
         if (!otherPlayers[id] && id != user.id){
             let p = new THREE.Mesh( playerGeometry, otherPlayersMaterial );
             p.castShadow = true;
             p.position.y = 1;
+            p.position.x = pos.x;
+            p.position.z = -pos.y;
             scene.add(p);
             otherPlayers[id] = p;
         }        
     }
+
+    for (const [id, p] of Object.entries(otherPlayers)) {
+        if (!position_table[id]) {
+            scene.remove(otherPlayers[id]);
+            delete otherPlayers[id];
+        }
+    }
 }
-initOtherPlayers();
 
 var playerTags = {};
-export function initTags(){
+export function updateTags(){
     for (const [id, u] of Object.entries(user_table)) {
         if (!playerTags[id] && id != user.id){
             playerTags[id] = creer_texte(u.prenom);
         }
     }
+
+    for (const [id, tag] of Object.entries(playerTags)) {
+        if (!position_table[id]) {
+            console.log("tag de " + id + " retiré");
+            tag.remove();
+            delete playerTags[id];
+        }
+    }
 }
-initTags();
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
@@ -95,22 +110,26 @@ function animate() {
     camera.position.z = player.position.z + 4;
 
     for (const [id, p] of Object.entries(otherPlayers)) {
-        let destination = new THREE.Vector3(position_table[id].x, p.position.y, -position_table[id].y);
-        let direction = new THREE.Vector3();
-        direction.subVectors(destination, p.position);
-        if (direction.length() < speed * dt){
-            p.position.copy(destination);
-        } else {
-            direction.normalize();
-            direction.multiplyScalar(speed * dt);
-            p.position.add(direction);
-        }
-        
+        let pos = position_table[id];
 
-        let tag_pos = p.position.clone();
-        tag_pos.y += 1.5;
-        let sc = screenCoords(tag_pos);
-        set_position(playerTags[id], sc);
+        if (pos) {
+            let destination = new THREE.Vector3(pos.x, p.position.y, -pos.y);
+            let direction = new THREE.Vector3();
+            direction.subVectors(destination, p.position);
+            if (direction.length() < speed * dt){
+                p.position.copy(destination);
+            } else {
+                direction.normalize();
+                direction.multiplyScalar(speed * dt);
+                p.position.add(direction);
+            }
+            
+    
+            let tag_pos = p.position.clone();
+            tag_pos.y += 1.5;
+            let sc = screenCoords(tag_pos);
+            set_position(playerTags[id], sc);
+        }
     }
 
 	renderer.render( scene, camera );

@@ -45,5 +45,7 @@ module.exports = {
     user_table,
     position_table,
     insert_pos,
-    get_users
+    get_users,
+    delete_pos,
+    delete_user
 };

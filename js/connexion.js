@@ -15,6 +15,7 @@ document.getElementById("formulaire").addEventListener("submit", async function(
     if (result.session_opened){        
         window.location.replace("./jeu.html");
     } else {
-        console.log("Erreur : les identifiants ou mots de passe incorrects.")
+        let p = document.getElementById("error");
+        p.innerText = "Erreur : les identifiants ou mots de passe incorrects.";
     }
 });

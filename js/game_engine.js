@@ -15,6 +15,8 @@ function isKeyDown(keyCode) {
     return keysPressed[keyCode] || false;
 }
 
+
+
 function length(vect){
     return Math.sqrt(vect.x*vect.x + vect.y*vect.y);
 }
@@ -36,21 +38,23 @@ function mult(vect, n){
     return {x: vect.x*n, y: vect.y*n};
 }
 
+
+
 function updatePos(dt) {
     let vect = {x:0, y:0};
-    if (isKeyDown('KeyS')){
+    if (isKeyDown('ShiftLeft')){
         multVitesse = 2;
     } else {
         multVitesse = 1;
     }
-    if (isKeyDown('ArrowDown')) {
-        vect.y -= (1);
-    }if (isKeyDown('ArrowUp')) {
-        vect.y += (1);
-    }if (isKeyDown('ArrowLeft')) {
-        vect.x -= (1);
-    }if (isKeyDown('ArrowRight')) {
-        vect.x += (1);
+    if (isKeyDown('ArrowDown') || isKeyDown('KeyS')) {
+        vect.y -= 1;
+    }if (isKeyDown('ArrowUp') || isKeyDown('KeyW')) {
+        vect.y += 1;
+    }if (isKeyDown('ArrowLeft') || isKeyDown('KeyA')) {
+        vect.x -= 1;
+    }if (isKeyDown('ArrowRight') || isKeyDown('KeyD')) {
+        vect.x += 1;
     }
     playerCoords = add(playerCoords, mult(normalized(vect), speed * dt * multVitesse));
     sendPosition();

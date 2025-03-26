@@ -28,7 +28,7 @@ async function import_users (list) {
         data.forEach(user => {
             user_table[user.id] = user;
         });
-        initTags();
+        updateTags();
     });
 }
 
@@ -39,6 +39,14 @@ function update_user_table(){
             unknown.push(key);
         }
     }
+
+    for (const [id, u] of Object.entries(user_table)) {
+        if (!position_table[id]) {
+            delete user_table[id];
+        }
+    }
+    updateTags();
+
     if (unknown.length > 0) {
         import_users(unknown);
     }
@@ -49,18 +57,23 @@ const socket = new WebSocket('ws://localhost:3000');
 socket.onopen = (event) => {
     (async () => {
         await initUser();
-        sendPosition();
+        socket.send(JSON.stringify({header:"authentification", id:user.id}));
     })();
 };
 
 socket.onmessage = (event) => {
     position_table = JSON.parse(event.data);
     update_user_table();
-    initOtherPlayers();
+    updateOtherPlayers();
+};
+
+socket.onclose = (event) => {
+    //changer en la page de menu
+    window.location.replace("./connexion.html");
 };
 
 function sendPosition() {
-    if (user){
-        socket.send(JSON.stringify({id:user.id, pos:playerCoords}));
+    if (user && socket.readyState === WebSocket.OPEN){
+        socket.send(JSON.stringify({header:"updatePos", id:user.id, pos:playerCoords}));
     }
 }
