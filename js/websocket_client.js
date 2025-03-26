@@ -68,8 +68,7 @@ socket.onmessage = (event) => {
 };
 
 socket.onclose = (event) => {
-    //changer en la page de menu
-    window.location.replace("./connexion.html");
+    window.location.replace("./");
 };
 
 function sendPosition() {
