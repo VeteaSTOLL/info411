@@ -62,17 +62,36 @@ socket.onopen = (event) => {
 };
 
 socket.onmessage = (event) => {
-    position_table = JSON.parse(event.data);
-    update_user_table();
-    updateOtherPlayers();
+    let message_json = JSON.parse(event.data);
+
+    switch (message_json.header) {
+    case 'positionTable':        
+        if (user) {
+            position_table = message_json.table;
+            update_user_table();
+            updateOtherPlayers();
+        }
+        break;
+    case 'chat':
+        if (user_table[message_json.id]){
+            new_message(user_table[message_json.id].prenom, message_json.body);
+        }
+        break;
+    }
 };
 
 socket.onclose = (event) => {
-    window.location.replace("./");
+    //window.location.replace("./");
 };
 
 function sendPosition() {
     if (user && socket.readyState === WebSocket.OPEN){
         socket.send(JSON.stringify({header:"updatePos", id:user.id, pos:playerCoords}));
+    }
+}
+
+function sendMessage(message) {
+    if (user && socket.readyState === WebSocket.OPEN){
+        socket.send(JSON.stringify({header:"chat", id:user.id, body:message}));
     }
 }

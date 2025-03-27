@@ -116,14 +116,18 @@ wss.on('connection', (ws) => {
             id = message_json.id;
             break;
         case 'chat':
-            // envoyer en broadcast le message du chat
+            wss.clients.forEach(client => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify(message_json));
+                }
+            });
             break;
         }
     });
 
     // Envoie la liste des positions à tous les utilisateurs toutes les 50 ms
     const interval = setInterval(() => {
-        ws.send(JSON.stringify(data.position_table));
+        ws.send(JSON.stringify({"header":"positionTable", "table":data.position_table}));
     }, 50);
 
     ws.on('close', () => {

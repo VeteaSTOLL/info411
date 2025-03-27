@@ -1,15 +1,7 @@
 function creer_texte(text){
     let textBox = document.createElement('div');
-    textBox.innerText = text;
-    
-    textBox.style.position = 'absolute';
-    textBox.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-    textBox.style.color = "white";
-    textBox.style.fontSize = "2 em";
-    textBox.style.fontFamily = "sans-serif";
-    textBox.style.padding = ".15em 1em .2em";
-    textBox.style.borderRadius = "100px";
-
+    textBox.innerText = text;    
+    textBox.className = "tag";   
     document.body.appendChild(textBox);
     return textBox;
 }
@@ -28,4 +20,25 @@ function set_position(element, coords){
 
         element.style.fontSize = 150/coords.z + "px";
     }
+}
+
+let input = document.getElementById("chat-input");
+
+input.onkeydown = (event) => {   
+    if (event.key == "Enter") {
+        sendMessage(input.value);
+        input.value = "";
+    }
+}
+
+let chat = document.getElementById("chat");
+
+function new_message(prenom, message) {
+    let p = document.createElement("p");
+    p.innerText = "[" + prenom + "] : " + message;
+    p.className = "message";
+    setTimeout(() => {
+        p.remove();;
+    }, 10000);
+    chat.appendChild(p);
 }

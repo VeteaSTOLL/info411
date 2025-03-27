@@ -64,7 +64,6 @@ export function updateTags(){
 
     for (const [id, tag] of Object.entries(playerTags)) {
         if (!position_table[id]) {
-            console.log("tag de " + id + " retiré");
             tag.remove();
             delete playerTags[id];
         }
