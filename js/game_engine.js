@@ -42,20 +42,24 @@ function mult(vect, n){
 
 function updatePos(dt) {
     let vect = {x:0, y:0};
-    if (isKeyDown('ShiftLeft')){
-        multVitesse = 2;
-    } else {
-        multVitesse = 1;
+    
+    if (!writting) {
+        if (isKeyDown('ShiftLeft')){
+            multVitesse = 2;
+        } else {
+            multVitesse = 1;
+        }
+        if (isKeyDown('ArrowDown') || isKeyDown('KeyS')) {
+            vect.y -= 1;
+        }if (isKeyDown('ArrowUp') || isKeyDown('KeyW')) {
+            vect.y += 1;
+        }if (isKeyDown('ArrowLeft') || isKeyDown('KeyA')) {
+            vect.x -= 1;
+        }if (isKeyDown('ArrowRight') || isKeyDown('KeyD')) {
+            vect.x += 1;
+        }
     }
-    if (isKeyDown('ArrowDown') || isKeyDown('KeyS')) {
-        vect.y -= 1;
-    }if (isKeyDown('ArrowUp') || isKeyDown('KeyW')) {
-        vect.y += 1;
-    }if (isKeyDown('ArrowLeft') || isKeyDown('KeyA')) {
-        vect.x -= 1;
-    }if (isKeyDown('ArrowRight') || isKeyDown('KeyD')) {
-        vect.x += 1;
-    }
+    
     playerCoords = add(playerCoords, mult(normalized(vect), speed * dt * multVitesse));
     sendPosition();
 }

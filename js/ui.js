@@ -31,6 +31,16 @@ input.onkeydown = (event) => {
     }
 }
 
+let writting = false; 
+
+input.addEventListener("focusin", (event) => {
+    writting = true;
+});
+
+input.addEventListener("focusout", (event) => {    
+    writting = false;
+});
+
 let chat = document.getElementById("chat");
 
 function new_message(prenom, message) {
