@@ -102,6 +102,10 @@ const server = app.listen(PORT, () => {
 // PARTIE WEBSOCKET
 const wss = new WebSocket.Server({ server });
 
+var wsid = {};
+
+var timeouts = {};
+
 wss.on('connection', (ws) => {
     // Connexion du client
     let id;
@@ -118,6 +122,7 @@ wss.on('connection', (ws) => {
             break;
         case 'authentification':
             id = message_json.id;
+            wsid[id] = ws
             break;
         case 'chat':
             wss.clients.forEach(client => {
@@ -125,6 +130,31 @@ wss.on('connection', (ws) => {
                     client.send(JSON.stringify(message_json));
                 }
             });
+            break;
+        case 'harcelement':
+            //check la distance
+            if (true && wsid[message_json.target]) {
+
+                ws.send(JSON.stringify({header:"debut_harcelement", role:"harceleur"}));
+                wsid[message_json.target].send(JSON.stringify({header:"debut_harcelement", role:"harcele"}));
+
+                timeouts[id] = setTimeout(() => {
+
+                    ws.send(JSON.stringify({header:"fin_harcelement", status:"ok"}));
+                    wsid[message_json.target].send(JSON.stringify({header:"fin_harcelement", status:"ok"}));
+                    delete timeouts[id];
+
+                }, 3000);
+                // changer la durée en fonction du niveau de popularité
+            }
+            break;
+        case 'interruption':
+            if (timeouts[message_json.source]) {
+                wsid[message_json.source].send(JSON.stringify({header:"fin_harcelement", status:"nok"}));
+                wsid[message_json.target].send(JSON.stringify({header:"fin_harcelement", status:"nok"}));
+                clearTimeout(timeouts[message_json.source]);
+                delete timeouts[message_json.source];
+            }
             break;
         }
     });
@@ -135,8 +165,11 @@ wss.on('connection', (ws) => {
     }, 50);
 
     ws.on('close', () => {
-        if (id){
+        if (id) {
             data.delete_pos(id);
+            if (wsid[id]) {
+                delete wsid[id];
+            }
         }
         clearInterval(interval); // Supprimer l'intervalle quand le client se déconnecte
     });

@@ -76,6 +76,14 @@ socket.onmessage = (event) => {
             new_message(user_table[message_json.id].prenom, message_json.body);
         }
         break;
+    case 'debut_harcelement':
+        // gérer
+        console.log(message_json);
+        break;
+    case 'fin_harcelement':
+        // gérer
+        console.log(message_json);
+        break;
     }
 };
 
@@ -93,4 +101,12 @@ function sendMessage(message) {
     if (user && socket.readyState === WebSocket.OPEN){
         socket.send(JSON.stringify({header:"chat", id:user.id, body:message}));
     }
+}
+
+function harceler(target_id) {
+    socket.send(JSON.stringify({header:"harcelement", target:target_id}));
+}
+
+function interrompre(source_id, target_id) {
+    socket.send(JSON.stringify({header:"interruption", source:source_id, target:target_id}));
 }
