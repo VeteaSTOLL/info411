@@ -1,5 +1,9 @@
 import * as THREE from 'three';
 
+function rgbToHex([r, g, b]) {
+    return (r << 16) | (g << 8) | b;
+}
+
 const scene = new THREE.Scene();
 scene.background = new THREE.Color( 0xf0f0f0 );
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -30,20 +34,18 @@ const player = new THREE.Mesh( playerGeometry, playerMaterial );
 player.castShadow = true;
 scene.add( player );
 
-const otherPlayersMaterial = new THREE.MeshStandardMaterial( { color: 0xff3333 } );
-
 var otherPlayers = {};
 export function updateOtherPlayers(){
     for (const [id, pos] of Object.entries(position_table)) {
         if (!otherPlayers[id] && id != user.id){
-            let p = new THREE.Mesh( playerGeometry, otherPlayersMaterial );
+            let p = new THREE.Mesh( playerGeometry, new THREE.MeshStandardMaterial( { color: 0xff3333 } ) );
             p.castShadow = true;
             p.position.y = 1;
             p.position.x = pos.x;
             p.position.z = -pos.y;
             scene.add(p);
             otherPlayers[id] = p;
-        }        
+        }
     }
 
     for (const [id, p] of Object.entries(otherPlayers)) {
@@ -55,13 +57,16 @@ export function updateOtherPlayers(){
 }
 
 var playerTags = {};
+
 export function updateTags(){
     for (const [id, u] of Object.entries(user_table)) {
         if (!playerTags[id] && id != user.id){
             playerTags[id] = creer_texte(u.prenom);
         }
     }
+}
 
+export function deleteUnusedTags(){
     for (const [id, tag] of Object.entries(playerTags)) {
         if (!position_table[id]) {
             tag.remove();

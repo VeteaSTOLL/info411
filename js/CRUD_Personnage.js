@@ -1,7 +1,7 @@
 const connexion = require("./db_connect");
 
 async function insert_perso(nom, prenom, email, mdp) { 
-    const sql = "INSERT INTO Personnage (nom, prenom, email, mdp) VALUES (?, ?, ?, ?)";
+    const sql = "INSERT INTO Personnage (nom, prenom, email, mdp) VALUES (?, ?, ?, ?, ?)";
     let conn;
     try {
         conn = await connexion.pool.getConnection();

@@ -1,4 +1,5 @@
 var user; 
+
 async function initUser() {
     await fetch("http://localhost:3000/session_user", { credentials:'include' })
     .then(response => response.json())
@@ -11,45 +12,43 @@ async function initUser() {
     });
 }
 
-var user_table = {};
 var position_table = {};
+var user_table = {};
 
-async function import_users (list) {
-    await fetch("http://localhost:3000/users", {
+async function import_user (id) {
+    await fetch("http://localhost:3000/user/"+id, {
         credentials:'include',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(list)
+        }
     })
     .then(response => response.json())
     .then(data => {
-        data.forEach(user => {
-            user_table[user.id] = user;
-        });
+        let u = data;
+        user_table[u.id] = u;
         updateTags();
     });
 }
 
 function update_user_table(){
-    let unknown = [];
+
+    // on importe les utilisateurs qu'on ne connait pas
     for (const [key, value] of Object.entries(position_table)) {
         if (!user_table[key]){
-            unknown.push(key);
+            import_user(key);
         }
     }
-
+    
+    // on supprime les utilisateurs qui ne sont plus là
     for (const [id, u] of Object.entries(user_table)) {
         if (!position_table[id]) {
             delete user_table[id];
         }
     }
-    updateTags();
-
-    if (unknown.length > 0) {
-        import_users(unknown);
-    }
+    
+    // on rafraichit les tags pour supprimer ceux des utilisateurs disparus
+    deleteUnusedTags();
 }
 
 const socket = new WebSocket('ws://localhost:3000');
@@ -81,7 +80,7 @@ socket.onmessage = (event) => {
 };
 
 socket.onclose = (event) => {
-    //window.location.replace("./");
+    window.location.replace("./");
 };
 
 function sendPosition() {

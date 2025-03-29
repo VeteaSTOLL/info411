@@ -83,11 +83,15 @@ app.get("/session_user", (req, res) => {
     }
 });
 
-app.post("/users", (req, res) => {
-    // Renvoie les utilisateur qui ont été listés dans un array, ex: [1, 2, 10, 12]
+app.post("/user/:id", (req, res) => {
+    // Renvoie l'utilisateur
 
-    const arr = req.body;
-    res.send(JSON.stringify(data.get_users(arr)));
+    const id = req.params.id;
+    (async () => {
+        let perso = (await crudP.select_perso(id))[0]
+        res.send(JSON.stringify(perso));
+    })();
+
 });
 
 // Lance le serveur
@@ -133,7 +137,6 @@ wss.on('connection', (ws) => {
     ws.on('close', () => {
         if (id){
             data.delete_pos(id);
-            data.delete_user(id);
         }
         clearInterval(interval); // Supprimer l'intervalle quand le client se déconnecte
     });

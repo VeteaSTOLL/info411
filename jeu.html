@@ -22,9 +22,10 @@
     <script type="module" src="./js/render.js"></script>
     <script type="module">
         // sert à globaliser les fonctions de modules.
-        import { updateOtherPlayers, updateTags } from './js/render.js';
+        import { updateOtherPlayers, updateTags, deleteUnusedTags } from './js/render.js';
         window.updateOtherPlayers = updateOtherPlayers;
         window.updateTags = updateTags;
+        window.deleteUnusedTags = deleteUnusedTags;
     </script>
     <script src="./js/game_engine.js"></script>    
     <script src="./js/websocket_client.js"></script>
