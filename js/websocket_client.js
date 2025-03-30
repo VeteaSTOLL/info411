@@ -7,7 +7,7 @@ async function initUser() {
         if(data.id){
             user = data;
         } else {
-            window.location.replace("./connexion.html");
+            window.location.replace("./");
         }
     });
 }
