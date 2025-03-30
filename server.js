@@ -105,6 +105,7 @@ const wss = new WebSocket.Server({ server });
 var wsid = {};
 
 var timeouts = {};
+var interraction = {};
 
 wss.on('connection', (ws) => {
     // Connexion du client
@@ -120,10 +121,12 @@ wss.on('connection', (ws) => {
                 data.insert_pos(message_json.id, message_json.pos);
             }
             break;
+
         case 'authentification':
             id = message_json.id;
             wsid[id] = ws
             break;
+
         case 'chat':
             wss.clients.forEach(client => {
                 if (client.readyState === WebSocket.OPEN) {
@@ -131,29 +134,50 @@ wss.on('connection', (ws) => {
                 }
             });
             break;
+
         case 'harcelement':
-            //check la distance
-            if (true && wsid[message_json.target]) {
+            // check la distance (pas encore implémenté) + si le joueur cible est bien authentifié
+            // + qu'on est pas en interraction + que la cible n'est pas en interraction
+            if (wsid[message_json.target] && !interraction[id] && !interraction[message_json.target]) {
 
-                ws.send(JSON.stringify({header:"debut_harcelement", role:"harceleur"}));
-                wsid[message_json.target].send(JSON.stringify({header:"debut_harcelement", role:"harcele"}));
+                // envoie le message de confirmation aux 2 joueurs 
+                ws.send(JSON.stringify({header:"debut_harcelement", role:"harceleur", target:message_json.target}));
+                wsid[message_json.target].send(JSON.stringify({header:"debut_harcelement", role:"harcele", source:id}));
 
+                // les mets en interraction
+                interraction[id] = true;
+                interraction[message_json.target] = true;
+
+                // à la fin :
                 timeouts[id] = setTimeout(() => {
 
+                    // message de fin de harcèlement
                     ws.send(JSON.stringify({header:"fin_harcelement", status:"ok"}));
                     wsid[message_json.target].send(JSON.stringify({header:"fin_harcelement", status:"ok"}));
+                    // on supprime le timeout
                     delete timeouts[id];
+                    
+                    // on enlève les interractions
+                    delete interraction[id];
+                    delete interraction[message_json.target];
 
                 }, 3000);
                 // changer la durée en fonction du niveau de popularité
             }
             break;
+
         case 'interruption':
             if (timeouts[message_json.source]) {
-                wsid[message_json.source].send(JSON.stringify({header:"fin_harcelement", status:"nok"}));
-                wsid[message_json.target].send(JSON.stringify({header:"fin_harcelement", status:"nok"}));
+                // envoie un message de fin de harcèlement : raté
+                wsid[message_json.source].send(JSON.stringify({header:"fin_harcelement", status:"nok", interrupter:id}));
+                wsid[message_json.target].send(JSON.stringify({header:"fin_harcelement", status:"nok", interrupter:id}));
+                // abandonne et enlève le timeout
                 clearTimeout(timeouts[message_json.source]);
                 delete timeouts[message_json.source];
+                
+                // on enlève les interractions
+                delete interraction[id];
+                delete interraction[message_json.target];
             }
             break;
         }

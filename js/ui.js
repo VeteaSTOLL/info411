@@ -52,3 +52,24 @@ function new_message(prenom, message) {
     }, 10000);
     chat.appendChild(p);
 }
+
+let info = document.getElementById("info");
+let currentTimeout;
+
+function set_info(text) {
+    info.innerText = text;
+    clearTimeout(currentTimeout);
+    currentTimeout = setTimeout(() => {
+        info.innerText = "";;
+    }, 3000);
+}
+
+let indication = document.getElementById("indication");
+
+function set_indication(text) {
+    indication.innerText = text;
+}
+
+function clear_indication() {
+    indication.innerText = "";
+}

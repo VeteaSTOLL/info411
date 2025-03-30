@@ -60,6 +60,8 @@ socket.onopen = (event) => {
     })();
 };
 
+let interraction = false;
+
 socket.onmessage = (event) => {
     let message_json = JSON.parse(event.data);
 
@@ -77,12 +79,20 @@ socket.onmessage = (event) => {
         }
         break;
     case 'debut_harcelement':
-        // gérer
-        console.log(message_json);
+        if (message_json.role == "harceleur") {
+            set_info("Vous harcelez " + user_table[message_json.target].prenom + ".");
+        } else if (message_json.role == "harcele") {
+            set_info("Vous vous faites harceler par " + user_table[message_json.source].prenom + ", Appelez à l'aide !");
+        }
+        interraction = true;
         break;
     case 'fin_harcelement':
-        // gérer
-        console.log(message_json);
+        if (message_json.status == "ok") {
+            set_info("Le harcèlement s'est terminé avec succès.");
+        } else if (message_json.status == "nok") {
+            set_info("Le harcèlement a été interrompu par " + user_table[message_json.interrupter].prenom +".");
+        }        
+        interraction = false;
         break;
     }
 };
