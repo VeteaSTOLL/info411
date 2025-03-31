@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Jeu</title>
+        <link rel="stylesheet" href="./css/jeu.css">
+    </head>
+    <body>
+        <input type="text" id="chat-input"/>
+        <p id="indication"></p>
+        <p id="info"></p>
+        <div id="chat">
+        </div>
+    </body>
+    
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./js/three.module.js"
+            }
+        }
+    </script>
+    <script type="module" src="./js/render.js"></script>
+    <script type="module">
+        // sert à globaliser les fonctions de modules.
+        import { updateOtherPlayers, updateTags, deleteUnusedTags } from './js/render.js';
+        window.updateOtherPlayers = updateOtherPlayers;
+        window.updateTags = updateTags;
+        window.deleteUnusedTags = deleteUnusedTags;
+    </script>
+    <script src="./js/game_engine.js"></script>    
+    <script src="./js/websocket_client.js"></script>
+    <script src="./js/ui.js"></script>
+</html>
