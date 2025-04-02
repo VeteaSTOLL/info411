@@ -105,6 +105,17 @@ app.post("/user/:id", (req, res) => {
 
 });
 
+app.get("/interraction/:id", (req, res) => {
+    // Renvoie true si l'utilisateur est en interraction
+
+    const id = req.params.id;
+    if (interraction[id]) {
+        res.send(JSON.stringify(interraction[id]));
+    } else {
+        res.send({interracting:false});
+    }
+});
+
 // Lance le serveur
 const server = app.listen(PORT, () => {
     console.log(`Serveur en écoute sur http://localhost:${PORT}`);
@@ -156,8 +167,8 @@ wss.on('connection', (ws) => {
                 wsid[message_json.target].send(JSON.stringify({header:"debut_harcelement", role:"harcele", source:id}));
 
                 // les mets en interraction
-                interraction[id] = true;
-                interraction[message_json.target] = true;
+                interraction[id] = {interracting:true, role:"harceleur", other:message_json.target};
+                interraction[message_json.target] = {interracting:true, role:"harcele", other:id};
 
                 // à la fin :
                 timeouts[id] = setTimeout(() => {
@@ -187,7 +198,7 @@ wss.on('connection', (ws) => {
                 delete timeouts[message_json.source];
                 
                 // on enlève les interractions
-                delete interraction[id];
+                delete interraction[message_json.source];
                 delete interraction[message_json.target];
             }
             break;

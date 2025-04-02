@@ -51,6 +51,16 @@ function update_user_table(){
     deleteUnusedTags();
 }
 
+async function get_interraction(id) {
+    let res;
+    await fetch("http://localhost:3000/interraction/"+id, { credentials:'include' })
+    .then(response => response.json())
+    .then(data => {
+        res = data;
+    });
+    return res;
+}
+
 const socket = new WebSocket('ws://localhost:3000');
 
 socket.onopen = (event) => {

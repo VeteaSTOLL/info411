@@ -70,8 +70,15 @@ function updatePos(dt) {
     playerCoords = add(playerCoords, mult(normalized(vect), speed * dt * multVitesse));
     sendPosition();
 
-    if (!interraction && getNearestPlayer()) {
-        set_indication("Appuyez sur E pour harceler");
+    let np = getNearestPlayer();
+    if (!interraction && np) {
+        get_interraction(np).then((int) => {
+            if (int.interracting) {
+                set_indication("Appuyez sur E pour interrompre");
+            } else {
+                set_indication("Appuyez sur E pour harceler");
+            }
+        })
     } else {
         clear_indication();
     }
@@ -100,7 +107,18 @@ document.addEventListener("keydown", (event) => {
     if (!writting && !interraction && event.code == "KeyE") {
         let  np = getNearestPlayer();
         if (np) {
-            harceler(np);
+            get_interraction(np).then((int) => {
+                if (int.interracting) {
+                    if (int.role == "harceleur"){
+                        interrompre(np, int.other);
+                    } else {
+                        interrompre(int.other, np);
+                    }
+                } else {
+                    harceler(np);
+                }
+            })
         }
+
     }
 });

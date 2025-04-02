@@ -1,0 +1,35 @@
+name: loserland
+services:
+    node_back:
+        container_name: c_node_back
+        image: node_back
+        networks:
+            - reseau
+        ports:
+            - 3000:3000
+    node_front:
+        container_name: c_node_front
+        image: node_front
+        networks:
+            - reseau
+        ports:
+            - 8080:8080
+    mariadb:
+        container_name: c_mariadb
+        image: mariadb
+        networks:
+            - reseau
+        ports:
+            - 3306:3306
+        environment:
+            - MARIADB_ROOT_PASSWORD=root_cool
+            - MARIADB_USER=vttvcool
+            - MARIADB_PASSWORD=tvvtcool
+            - MARIADB_DATABASE=info411
+        volumes:
+            - ./dbdata:/var/lib/mysql
+            - ./sql:/docker-entrypoint-initdb.d
+networks:
+    reseau:
+        name: reseau
+        external: true
