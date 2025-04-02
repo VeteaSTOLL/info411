@@ -4,8 +4,7 @@ COPY package*.json ./
 
 RUN npm install --production
 
-COPY public ./public
-COPY app.js .
+RUN git clone https://github.com/VeteaSTOLL/VeteaSTOLL.github.io .
 
 EXPOSE 8080
 

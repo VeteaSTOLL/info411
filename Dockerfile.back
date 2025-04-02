@@ -1,11 +1,12 @@
 FROM node:18-alpine
 
-COPY package*.json ./
+WORKDIR /home/node/app
 
-RUN npm install --production
-
-COPY backend .
+RUN apk add --no-cache git && \
+    git clone https://github.com/VeteaSTOLL/info411 . && \
+    cp ./backend/db_connect.js.docker ./backend/db_connect.js && \
+    npm install --production
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+CMD ["node", "backend/server.js"]
