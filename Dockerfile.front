@@ -1,10 +1,10 @@
 FROM node:18-alpine
 
-COPY package*.json ./
+WORKDIR /home/node/app
 
-RUN npm install --production
-
-RUN git clone https://github.com/VeteaSTOLL/VeteaSTOLL.github.io .
+RUN apk add --no-cache git && \
+    git clone https://github.com/VeteaSTOLL/info411 . && \
+    npm install --production
 
 EXPOSE 8080
 
