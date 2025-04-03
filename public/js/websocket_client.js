@@ -1,4 +1,5 @@
 var user; 
+var popularite;
 
 async function initUser() {
     await fetch("http://localhost:3000/session_user", { credentials:'include' })
@@ -6,6 +7,8 @@ async function initUser() {
     .then(data => {
         if(data.id){
             user = data;
+            // changer pour prendre la valeur dans la DB
+            popularite = user.popularite;
         } else {
             window.location.replace("./");
         }
@@ -76,7 +79,7 @@ socket.onmessage = (event) => {
     let message_json = JSON.parse(event.data);
 
     switch (message_json.header) {
-    case 'positionTable':        
+    case 'positionTable':
         if (user) {
             position_table = message_json.table;
             update_user_table();
@@ -101,7 +104,8 @@ socket.onmessage = (event) => {
             set_info("Le harcèlement s'est terminé avec succès.");
         } else if (message_json.status == "nok") {
             set_info("Le harcèlement a été interrompu par " + user_table[message_json.interrupter].prenom +".");
-        }        
+        }     
+        popularite += message_json.points;   
         interraction = false;
         break;
     }

@@ -172,10 +172,11 @@ wss.on('connection', (ws) => {
 
                 // à la fin :
                 timeouts[id] = setTimeout(() => {
-
-                    // message de fin de harcèlement
-                    ws.send(JSON.stringify({header:"fin_harcelement", status:"ok"}));
-                    wsid[message_json.target].send(JSON.stringify({header:"fin_harcelement", status:"ok"}));
+                    // message de fin de harcèlement + update de popularite
+                    ws.send(JSON.stringify({header:"fin_harcelement", status:"ok", points:3}));
+                    crudP.ajouter_popularite(id, 3);
+                    wsid[message_json.target].send(JSON.stringify({header:"fin_harcelement", status:"ok", points:-3}));
+                    crudP.ajouter_popularite(message_json.target, -3);
                     // on supprime le timeout
                     delete timeouts[id];
                     
@@ -191,8 +192,8 @@ wss.on('connection', (ws) => {
         case 'interruption':
             if (timeouts[message_json.source]) {
                 // envoie un message de fin de harcèlement : raté
-                wsid[message_json.source].send(JSON.stringify({header:"fin_harcelement", status:"nok", interrupter:id}));
-                wsid[message_json.target].send(JSON.stringify({header:"fin_harcelement", status:"nok", interrupter:id}));
+                wsid[message_json.source].send(JSON.stringify({header:"fin_harcelement", status:"nok", points:-3, interrupter:id}));
+                wsid[message_json.target].send(JSON.stringify({header:"fin_harcelement", status:"nok", points:3, interrupter:id}));
                 // abandonne et enlève le timeout
                 clearTimeout(timeouts[message_json.source]);
                 delete timeouts[message_json.source];

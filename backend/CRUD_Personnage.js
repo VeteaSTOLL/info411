@@ -1,11 +1,11 @@
 const connexion = require("./db_connect");
 
-async function insert_perso(nom, prenom, email, mdp) { 
-    const sql = "INSERT INTO Personnage (nom, prenom, email, mdp) VALUES (?, ?, ?, ?, ?)";
+async function insert_perso(nom, prenom, email, mdp, popularite) { 
+    const sql = "INSERT INTO Personnage (nom, prenom, email, mdp, popularite) VALUES (?, ?, ?, ?, ?)";
     let conn;
     try {
         conn = await connexion.pool.getConnection();
-        const result = await conn.query(sql, [nom, prenom, email, mdp]);
+        const result = await conn.query(sql, [nom, prenom, email, mdp, popularite]);
         return { result };
     } catch (err) {
         throw err;
@@ -15,7 +15,7 @@ async function insert_perso(nom, prenom, email, mdp) {
 }
 
 async function select_perso(id) {
-    const sql = "SELECT id, nom, prenom, email FROM Personnage WHERE id=?";
+    const sql = "SELECT id, nom, prenom, email, popularite FROM Personnage WHERE id=?";
     let conn;
     try {
         conn = await connexion.pool.getConnection();
@@ -42,9 +42,23 @@ async function select_perso_connexion(email, mdp) {
     }
 }
 
+async function ajouter_popularite(id, popularite) {
+    const sql = "UPDATE `personnage` SET `popularite`=`popularite`+? WHERE id=?;";
+    let conn;
+    try {
+        conn = await connexion.pool.getConnection();
+        const result = await conn.query(sql, [popularite, id]);
+        return { result };
+    } catch (err) {
+        throw err;
+    } finally {
+        if (conn) conn.release();
+    }
+}
 
 module.exports = {
     insert_perso,
     select_perso,
-    select_perso_connexion
+    select_perso_connexion,
+    ajouter_popularite
 };
