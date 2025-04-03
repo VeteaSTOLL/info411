@@ -42,13 +42,27 @@ async function select_perso_connexion(email, mdp) {
     }
 }
 
-async function ajouter_popularite(id, popularite) {
-    const sql = "UPDATE `personnage` SET `popularite`=`popularite`+? WHERE id=?;";
+async function update_popularite(id, popularite) {
+    const sql = "UPDATE Personnage SET popularite=? WHERE id=?";
     let conn;
     try {
         conn = await connexion.pool.getConnection();
         const result = await conn.query(sql, [popularite, id]);
-        return { result };
+        return result;
+    } catch (err) {
+        throw err;
+    } finally {
+        if (conn) conn.release();
+    }
+}
+
+async function get_popularite(id) {
+    const sql = "SELECT popularite FROM Personnage WHERE id=?";
+    let conn;
+    try {
+        conn = await connexion.pool.getConnection();
+        const result = await conn.query(sql, [id]);
+        return result;
     } catch (err) {
         throw err;
     } finally {
@@ -60,5 +74,6 @@ module.exports = {
     insert_perso,
     select_perso,
     select_perso_connexion,
-    ajouter_popularite
+    update_popularite,
+    get_popularite
 };

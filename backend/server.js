@@ -121,13 +121,62 @@ const server = app.listen(PORT, () => {
     console.log(`Serveur en écoute sur http://localhost:${PORT}`);
 });
 
+
+// ----------------
 // PARTIE WEBSOCKET
+// ----------------
+
+// serveur websocket
 const wss = new WebSocket.Server({ server });
 
+// tableau liant l'id des utilisateurs à leur websocket
 var wsid = {};
 
+// tableau des timeouts pour pouvoir les interrompres
 var timeouts = {};
+
+// tableau des interractions
 var interraction = {};
+
+// Variables pour système d'Elo
+
+const MULT = 10;
+const BASE = 10;
+const DIV = 400;
+
+// Fonctions pour système d'Elo
+
+function points(A, B, gagnant) {
+    // renvoie les nouveaux points de A
+    let b = gagnant ? 1 : 0;
+    let nv_pts = A + MULT * (b - probabilite(A, B));
+    if (nv_pts < 0) {
+        nv_pts = 0;
+    }
+    return nv_pts;
+}
+
+function probabilite(A, B) {
+    // renvoie la "probabilité" qu'avait A de gagner
+    let scoreA = Math.pow(BASE, A/DIV);
+    let scoreB = Math.pow(BASE, B/DIV);
+    return scoreA / (scoreA + scoreB);
+}
+
+async function donner_points(source, target, interrompu, interrupteur) {
+    // s'occupe de la procédure pour donner les points aux joueurs
+    let pop_source = (await crudP.get_popularite(source))[0].popularite;
+    let pop_target = (await crudP.get_popularite(target))[0].popularite;
+
+    let points_source = points(pop_source, pop_target, !interrompu);
+    let points_target = points(pop_target, pop_source, interrompu);
+    
+    // message de fin de harcèlement + update de popularite
+    wsid[source].send(JSON.stringify({header:"fin_harcelement", status: interrompu?"nok":"ok", points: points_source, interrupter: interrupteur}));
+    crudP.update_popularite(source, points_source);
+    wsid[target].send(JSON.stringify({header:"fin_harcelement", status: interrompu?"nok":"ok", points: points_target, interrupter: interrupteur}));
+    crudP.update_popularite(target, points_target);
+}
 
 wss.on('connection', (ws) => {
     // Connexion du client
@@ -171,29 +220,24 @@ wss.on('connection', (ws) => {
                 interraction[message_json.target] = {interracting:true, role:"harcele", other:id};
 
                 // à la fin :
-                timeouts[id] = setTimeout(() => {
-                    // message de fin de harcèlement + update de popularite
-                    ws.send(JSON.stringify({header:"fin_harcelement", status:"ok", points:3}));
-                    crudP.ajouter_popularite(id, 3);
-                    wsid[message_json.target].send(JSON.stringify({header:"fin_harcelement", status:"ok", points:-3}));
-                    crudP.ajouter_popularite(message_json.target, -3);
+                timeouts[id] = setTimeout(async () => {
+                    donner_points(id, message_json.target, false, -1);
+
                     // on supprime le timeout
                     delete timeouts[id];
                     
                     // on enlève les interractions
                     delete interraction[id];
                     delete interraction[message_json.target];
-
                 }, 3000);
                 // changer la durée en fonction du niveau de popularité
             }
             break;
 
         case 'interruption':
-            if (timeouts[message_json.source]) {
-                // envoie un message de fin de harcèlement : raté
-                wsid[message_json.source].send(JSON.stringify({header:"fin_harcelement", status:"nok", points:-3, interrupter:id}));
-                wsid[message_json.target].send(JSON.stringify({header:"fin_harcelement", status:"nok", points:3, interrupter:id}));
+            if (timeouts[message_json.source]) {                
+                donner_points(message_json.source, message_json.target, true, id);
+
                 // abandonne et enlève le timeout
                 clearTimeout(timeouts[message_json.source]);
                 delete timeouts[message_json.source];

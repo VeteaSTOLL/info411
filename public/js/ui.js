@@ -73,3 +73,9 @@ function set_indication(text) {
 function clear_indication() {
     indication.innerText = "";
 }
+
+let indice_popularite = document.getElementById("indice-popularite");
+
+function set_popularite(points) {
+    indice_popularite.innerText = "Vous avez "+Math.round(points)+" points de popularité";
+}

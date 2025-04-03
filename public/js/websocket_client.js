@@ -7,8 +7,8 @@ async function initUser() {
     .then(data => {
         if(data.id){
             user = data;
-            // changer pour prendre la valeur dans la DB
             popularite = user.popularite;
+            set_popularite(popularite);
         } else {
             window.location.replace("./");
         }
@@ -105,7 +105,8 @@ socket.onmessage = (event) => {
         } else if (message_json.status == "nok") {
             set_info("Le harcèlement a été interrompu par " + user_table[message_json.interrupter].prenom +".");
         }     
-        popularite += message_json.points;   
+        popularite = message_json.points;
+        set_popularite(popularite);
         interraction = false;
         break;
     }
