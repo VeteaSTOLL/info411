@@ -16,7 +16,7 @@ app.set("trust proxy", 1);
 
 // Utile pour fetch
 app.use(cors({
-    origin: 'http://localhost:80',
+    origin: 'http://localhost',
     credentials: true, // Permet l'envoi des cookies avec les requêtes
 })); 
 // Utile pour traiter les données du formulaire
