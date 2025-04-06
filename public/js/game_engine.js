@@ -54,7 +54,7 @@ function updatePos(dt) {
     let vect = {x:0, y:0};
     
     if (!writting && !interraction) {
-        multVitesse = isKeyDown('ShiftLeft') ? 2 : 1; 
+        multVitesse = isKeyDown('ShiftLeft') ? 10 : 1; 
 
         if (isKeyDown('ArrowDown') || isKeyDown('KeyS')) {
             vect.y -= 1;

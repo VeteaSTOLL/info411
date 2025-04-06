@@ -61,7 +61,7 @@ var playerTags = {};
 export function updateTags(){
     for (const [id, u] of Object.entries(user_table)) {
         if (!playerTags[id] && id != user.id){
-            playerTags[id] = creer_texte(u.prenom);
+            playerTags[id] = creer_tag(u.prenom, u.popularite);
         }
     }
 }
@@ -79,7 +79,7 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
-directionalLight.position.set(5, 5, 5);
+directionalLight.position.set(50, 50, 50);
 directionalLight.castShadow = true;
 scene.add(directionalLight);
 var setShadowSize=(light1, sz, mapSz)=>{
@@ -91,7 +91,7 @@ var setShadowSize=(light1, sz, mapSz)=>{
         light1.shadow.mapSize.set(mapSz,mapSz)
     }
 }
-setShadowSize(directionalLight,50.0,4096);
+setShadowSize(directionalLight,50.0,8192);
 
 
 camera.position.z = 4;
@@ -158,6 +158,9 @@ function screenCoords(pos) {
     vect.x = ( vect.x * widthHalf ) + widthHalf;
     vect.y = -( vect.y * heightHalf ) + heightHalf;
     vect.z = camera.position.distanceTo( pos );
+    if (camera.position.z - pos.z <= 0){
+        vect.z = -1;
+    }
 
     return vect;
 }

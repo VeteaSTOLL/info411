@@ -1,22 +1,34 @@
-function creer_texte(text){
-    let textBox = document.createElement('div');
-    textBox.innerText = text;    
-    textBox.className = "tag";   
-    document.body.appendChild(textBox);
-    return textBox;
+function creer_tag(prenom, popularite){
+    let box = document.createElement('div');
+    box.className = "box";
+
+    let name = document.createElement('div');
+    name.innerText = prenom;    
+    name.className = "nom";   
+    box.appendChild(name);
+
+    let pop = document.createElement('div');
+    pop.innerText = popularite + "p"; 
+    pop.className = "pop";   
+    box.appendChild(pop);
+
+
+    document.body.appendChild(box);
+    return box;
 }
 
 function set_position(element, coords){
     if(!element){ return; };
+
     let bcr = element.getBoundingClientRect();
     let halfWidth = bcr.width/2, halfHeight = bcr.height/2;
 
-    if (coords.x + halfWidth > window.innerWidth || coords.y + halfHeight > window.innerHeight || coords.z > 20){
+    if (coords.x + halfWidth > window.innerWidth || coords.y + halfHeight > window.innerHeight || coords.z > 20 || coords.z < 0){
         element.style.visibility = "hidden";
     } else {
         element.style.visibility = "visible";
-        element.style.left = (coords.x - halfWidth) + 'px';
-        element.style.top = (coords.y - halfHeight) + 'px';
+        element.style.left = coords.x + 'px';
+        element.style.top = coords.y + 'px';
 
         element.style.fontSize = 150/coords.z + "px";
     }
@@ -25,7 +37,7 @@ function set_position(element, coords){
 let input = document.getElementById("chat-input");
 
 input.onkeydown = (event) => {   
-    if (event.key == "Enter") {
+    if (event.key == "Enter" && input.value != "") {
         sendMessage(input.value);
         input.value = "";
     }
