@@ -22,10 +22,10 @@ services:
         ports:
             - 3306:3306
         environment:
-            - MARIADB_ROOT_PASSWORD=root_cool
-            - MARIADB_USER=vttvcool
-            - MARIADB_PASSWORD=tvvtcool
-            - MARIADB_DATABASE=info411
+            - MARIADB_ROOT_PASSWORD=${ROOT_PASSWORD_DB}
+            - MARIADB_USER=${LOGIN_DB}
+            - MARIADB_PASSWORD=${PASSWORD_DB}
+            - MARIADB_DATABASE=${TABLE_DB}
         volumes:
             - ./dbdata:/var/lib/mysql
             - ./sql:/docker-entrypoint-initdb.d

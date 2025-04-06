@@ -1,4 +1,4 @@
-use info411;
+use ${TABLE_DB};
 
 INSERT INTO `Personnage` (`id`, `nom`, `prenom`, `email`, `mdp`, `popularite`) VALUES
 (1, 'stoll', 'vetea', 'vetea.stoll@gmail.com', 'vtcool', 100),
