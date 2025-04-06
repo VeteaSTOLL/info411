@@ -6,6 +6,6 @@ RUN apk add --no-cache git && \
     git clone https://github.com/VeteaSTOLL/info411 . && \
     npm install --production
 
-EXPOSE 8080
+EXPOSE 80
 
 CMD ["node", "app.js"]

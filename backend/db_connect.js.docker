@@ -3,8 +3,8 @@ const mariadb = require('mariadb');
 const pool = mariadb.createPool({
   host: 'c_mariadb',
   port: 3306,
-  user: '${LOGIN_DB}', 
-  password: '${PASSWORD_DB}', 
+  user: 'vttvcool', 
+  password: 'tvvtcool', 
   database: 'info411',
   connectionLimit: 10
 });
