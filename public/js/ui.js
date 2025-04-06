@@ -34,6 +34,16 @@ function set_position(element, coords){
     }
 }
 
+let indice_popularite = document.getElementById("indice-popularite");
+
+function set_popularite(id, points) {
+    if (id == user.id) {
+        indice_popularite.innerText = "Vous avez "+Math.round(points)+" points de popularité";
+    } else {
+        playerTags[id].querySelector(".pop").innerText = Math.round(points) + "p";
+    }
+}
+
 let input = document.getElementById("chat-input");
 
 input.onkeydown = (event) => {   
@@ -86,8 +96,8 @@ function clear_indication() {
     indication.innerText = "";
 }
 
-let indice_popularite = document.getElementById("indice-popularite");
-
+/*
 function set_popularite(points) {
     indice_popularite.innerText = "Vous avez "+Math.round(points)+" points de popularité";
 }
+*/

@@ -1,5 +1,4 @@
-var user; 
-var popularite;
+var user;
 
 async function initUser() {
     await fetch("http://localhost:3000/session_user", { credentials:'include' })
@@ -7,8 +6,7 @@ async function initUser() {
     .then(data => {
         if(data.id){
             user = data;
-            popularite = user.popularite;
-            set_popularite(popularite);
+            set_popularite(user.id, user.popularite);
         } else {
             window.location.replace("./");
         }
@@ -17,6 +15,24 @@ async function initUser() {
 
 var position_table = {};
 var user_table = {};
+
+var playerTags = {};
+
+function updateTag(u){
+    let id = u.id;
+    if (!playerTags[id] && id != user.id){
+        playerTags[id] = creer_tag(u.prenom, u.popularite);
+    }
+}
+
+function deleteUnusedTags(){
+    for (const [id, tag] of Object.entries(playerTags)) {
+        if (!position_table[id]) {
+            tag.remove();
+            delete playerTags[id];
+        }
+    }
+}
 
 async function import_user (id) {
     await fetch("http://localhost:3000/user/"+id, {
@@ -30,7 +46,7 @@ async function import_user (id) {
     .then(data => {
         let u = data;
         user_table[u.id] = u;
-        updateTags();
+        updateTag(u);
     });
 }
 
@@ -104,10 +120,14 @@ socket.onmessage = (event) => {
             set_info("Le harcèlement s'est terminé avec succès.");
         } else if (message_json.status == "nok") {
             set_info("Le harcèlement a été interrompu par " + user_table[message_json.interrupter].prenom +".");
-        }     
-        popularite = message_json.points;
-        set_popularite(popularite);
+        }
         interraction = false;
+        break;
+    case 'update_popularite':
+        let id = message_json.id;
+        let points = message_json.points;
+        user_table[id].popularite = points;
+        set_popularite(id, points);
         break;
     }
 };

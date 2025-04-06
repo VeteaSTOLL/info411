@@ -172,10 +172,17 @@ async function donner_points(source, target, interrompu, interrupteur) {
     let points_target = points(pop_target, pop_source, interrompu);
     
     // message de fin de harcèlement + update de popularite
-    wsid[source].send(JSON.stringify({header:"fin_harcelement", status: interrompu?"nok":"ok", points: points_source, interrupter: interrupteur}));
+    wsid[source].send(JSON.stringify({header:"fin_harcelement", status: interrompu?"nok":"ok", interrupter: interrupteur}));
     crudP.update_popularite(source, points_source);
-    wsid[target].send(JSON.stringify({header:"fin_harcelement", status: interrompu?"nok":"ok", points: points_target, interrupter: interrupteur}));
+    wsid[target].send(JSON.stringify({header:"fin_harcelement", status: interrompu?"nok":"ok", interrupter: interrupteur}));
     crudP.update_popularite(target, points_target);
+
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({header:"update_popularite", id: source, points: points_source}));
+            client.send(JSON.stringify({header:"update_popularite", id: target, points: points_target}));
+        }
+    });
 }
 
 wss.on('connection', (ws) => {

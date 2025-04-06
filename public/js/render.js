@@ -56,25 +56,6 @@ export function updateOtherPlayers(){
     }
 }
 
-var playerTags = {};
-
-export function updateTags(){
-    for (const [id, u] of Object.entries(user_table)) {
-        if (!playerTags[id] && id != user.id){
-            playerTags[id] = creer_tag(u.prenom, u.popularite);
-        }
-    }
-}
-
-export function deleteUnusedTags(){
-    for (const [id, tag] of Object.entries(playerTags)) {
-        if (!position_table[id]) {
-            tag.remove();
-            delete playerTags[id];
-        }
-    }
-}
-
 const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
 
