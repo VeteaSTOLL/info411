@@ -1,11 +1,12 @@
 const mariadb = require('mariadb');
+require('dotenv').config();
 
 const pool = mariadb.createPool({
   host: 'c_mariadb',
   port: 3306,
-  user: 'vttvcool', 
-  password: 'tvvtcool', 
-  database: 'info411',
+  user: process.env.LOGIN_DB, 
+  password: process.env.PASSWORD_DB, 
+  database: process.env.ROOT_PASSWORD_DB,
   connectionLimit: 10
 });
 

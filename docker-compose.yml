@@ -7,6 +7,8 @@ services:
             - reseau
         ports:
             - 3000:3000
+        volumes:
+            - .:/home/node/app
     node_front:
         container_name: c_node_front
         image: veteastoll/node_front
@@ -14,6 +16,8 @@ services:
             - reseau
         ports:
             - 80:80
+        volumes:
+            - .:/home/node/app
     mariadb:
         container_name: c_mariadb
         image: mariadb

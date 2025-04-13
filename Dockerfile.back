@@ -1,11 +1,13 @@
-FROM node:18-alpine
+FROM node:23-alpine
 
 WORKDIR /home/node/app
 
-RUN apk add --no-cache git && \
-    git clone https://github.com/VeteaSTOLL/info411 . && \
-    cp ./backend/db_connect.js.docker ./backend/db_connect.js && \
+COPY . .
+
+RUN cp ./backend/db_connect.js.docker ./backend/db_connect.js && \
     npm install --production
+
+VOLUME ["/home/node/app"]
 
 EXPOSE 3000
 
