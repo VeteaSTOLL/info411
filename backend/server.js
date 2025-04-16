@@ -1,5 +1,6 @@
 // Middlewares
 
+require('dotenv').config();
 const cors = require("cors");
 const express = require("express");
 const session = require("express-session");
@@ -10,13 +11,13 @@ const crudP = require("./CRUD_Personnage");
 const data = require("./server_data");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT_BACK;
 
 app.set("trust proxy", 1);
 
 // Utile pour fetch
 app.use(cors({
-    origin: 'http://localhost',
+    origin: `http://localhost:${process.env.PORT_FRONT}`,
     credentials: true, // Permet l'envoi des cookies avec les requêtes
 })); 
 // Utile pour traiter les données du formulaire

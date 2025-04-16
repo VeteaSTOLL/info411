@@ -6,7 +6,7 @@ services:
         networks:
             - reseau
         ports:
-            - 3000:3000
+            - ${PORT_BACK}:3000
         volumes:
             - .:/home/node/app
     node_front:
@@ -15,7 +15,7 @@ services:
         networks:
             - reseau
         ports:
-            - 80:80
+            - ${PORT_FRONT}:80
         volumes:
             - .:/home/node/app
     mariadb:
@@ -24,7 +24,7 @@ services:
         networks:
             - reseau
         ports:
-            - 3306:3306
+            - ${PORT_MARIADB}:3306
         environment:
             - MARIADB_ROOT_PASSWORD=${ROOT_PASSWORD_DB}
             - MARIADB_USER=${LOGIN_DB}
@@ -39,10 +39,9 @@ services:
         networks:
             - reseau
         ports:
-            - 8080:80
+            - ${PORT_PMA}:80
         environment:
             - PMA_HOST=mariadb
 networks:
     reseau:
         name: reseau
-        external: true
