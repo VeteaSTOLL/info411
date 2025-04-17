@@ -46,3 +46,4 @@ services:
 networks:
     reseau:
         name: reseau
+        external: true
