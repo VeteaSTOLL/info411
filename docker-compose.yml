@@ -9,6 +9,7 @@ services:
             - ${PORT_BACK}:3000
         volumes:
             - .:/home/node/app
+            - /etc/letsencrypt:/etc/letsencrypt:ro
     node_front:
         container_name: c_node_front
         image: veteastoll/node_front

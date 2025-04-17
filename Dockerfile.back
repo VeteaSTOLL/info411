@@ -8,6 +8,7 @@ RUN cp ./backend/db_connect.js.docker ./backend/db_connect.js && \
     npm install --production
 
 VOLUME ["/home/node/app"]
+VOLUME ["/etc/letsencrypt"]
 
 EXPOSE 3000
 
