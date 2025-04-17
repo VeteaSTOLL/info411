@@ -20,7 +20,7 @@ app.set("trust proxy", 1);
 
 // Utile pour fetch
 app.use(cors({
-    origin: `http://localhost:${process.env.PORT_FRONT}`,
+    origin: 'https://loser-land.fr',
     credentials: true, // Permet l'envoi des cookies avec les requêtes
 })); 
 // Utile pour traiter les données du formulaire
@@ -32,7 +32,7 @@ app.use(session({
     saveUninitialized: false,
     httpOnly: true,
     cookie: {
-        secure: false, // True si HTTPS
+        secure: true, // True si HTTPS
         sameSite: true,
         maxAge: 1000 * 60 * 60 * 24 // 1 jour
     }
@@ -121,8 +121,8 @@ app.get("/interraction/:id", (req, res) => {
 });
 
 const sslOptions = {
-    key: fs.readFileSync('/etc/letsencrypt/live/loser-land.fr/fullchain.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/loser-land.fr/privkey.pem')
+    key: fs.readFileSync('/etc/letsencrypt/live/loser-land.fr/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/loser-land.fr/fullchain.pem')
 };
 
 const server = https.createServer(sslOptions, app);
