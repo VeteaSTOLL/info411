@@ -6,6 +6,9 @@ const express = require("express");
 const session = require("express-session");
 const WebSocket = require('ws');
 
+const fs = require('fs');
+const https = require('https');
+
 // Includes
 const crudP = require("./CRUD_Personnage");
 const data = require("./server_data");
@@ -117,9 +120,16 @@ app.get("/interraction/:id", (req, res) => {
     }
 });
 
+const sslOptions = {
+    key: fs.readFileSync('/etc/letsencrypt/live/loser-land.fr/fullchain.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/loser-land.fr/privkey.pem')
+};
+
+const server = https.createServer(sslOptions, app);
+
 // Lance le serveur
-const server = app.listen(PORT, () => {
-    console.log(`Serveur en écoute sur http://localhost:${PORT}`);
+server.listen(PORT, () => {
+    console.log(`https back lancé sur : ${PORT}`);
 });
 
 
