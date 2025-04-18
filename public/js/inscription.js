@@ -2,7 +2,7 @@ document.getElementById("formulaire").addEventListener("submit", async function(
     event.preventDefault(); // Empêche le rechargement de la page
 
     const data = new FormData(this);
-    const response = await fetch("http://localhost:3000/register", {
+    const response = await fetch("https://loser-land.fr:3000/register", {
         method: "POST",
         credentials: 'include',
         body: new URLSearchParams(data), // Convertit data en x-www-form-urlencoded

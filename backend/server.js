@@ -67,7 +67,7 @@ app.post("/register", (req, res) => {
     const {login, nom, prenom, passwd } = req.body;
     
     (async () => {
-        await crudP.insert_perso(nom, prenom, login, passwd);
+        await crudP.insert_perso(nom, prenom, login, passwd, 500);
     })()
 });
 

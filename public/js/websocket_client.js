@@ -80,7 +80,7 @@ async function get_interraction(id) {
     return res;
 }
 
-const socket = new WebSocket('ws://loser-land.fr:3000');
+const socket = new WebSocket('wss://loser-land.fr:3000');
 
 socket.onopen = (event) => {
     (async () => {
