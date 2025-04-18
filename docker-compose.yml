@@ -32,6 +32,7 @@ services:
             - MARIADB_PASSWORD=${PASSWORD_DB}
             - MARIADB_DATABASE=info411
         volumes:
+            - ./db_backup:/db_backup 
             - ./dbdata:/var/lib/mysql
             - ./sql:/docker-entrypoint-initdb.d
     phpmyadmin:
