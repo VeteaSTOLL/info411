@@ -1,7 +1,7 @@
 var user;
 
 async function logout(){
-    await fetch("https://loser-land.fr:3000/logout", {
+    await fetch(`${API_URL}/logout`, {
         method: "POST",
         credentials: 'include'  // Envoyer les cookies pour que le serveur puisse supprimer la session
     })
@@ -17,7 +17,7 @@ async function logout(){
 }
 
 async function initUser() {
-    await fetch("https://loser-land.fr:3000/session_user", { credentials:'include' })
+    await fetch(`${API_URL}/session_user`, { credentials:'include' })
     .then(response => response.json())
     .then(data => {
         if (data.id) {

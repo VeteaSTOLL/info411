@@ -1,13 +1,14 @@
 // Middlewares
 
+//require('path');
 require('dotenv').config();
 const cors = require("cors");
 const express = require("express");
 const session = require("express-session");
 const WebSocket = require('ws');
 
-const fs = require('fs');
-const https = require('https');
+// Détection de l'environnement
+const isProduction = process.env.NODE_ENV === 'production';
 
 // Includes
 const crudP = require("./CRUD_Personnage");
@@ -16,11 +17,33 @@ const data = require("./server_data");
 const app = express();
 const PORT = process.env.PORT_BACK;
 
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../public')));
+
+// if (isProduction) {
+//     // HTTPS en production
+//     const fs = require('fs');
+//     const https = require('https')
+
+//     const sslOptions = {
+//         key: fs.readFileSync('/etc/letsencrypt/live/loserland2025.tevaphilippe.fr/privkey.pem'),
+//         cert: fs.readFileSync('/etc/letsencrypt/live/loserland2025.tevaphilippe.fr/fullchain.pem')
+//     };  
+//     server = https.createServer(sslOptions, app);
+// } else {
+//     // HTTP en développement
+//     const http = require('http');
+//     server = http.createServer(app);
+// }
+
+const http = require('http');
+const server = http.createServer(app);
+
 app.set("trust proxy", 1);
 
 // Utile pour fetch
 app.use(cors({
-    origin: 'https://loser-land.fr',
+    origin: 'http://localhost:3000',
     credentials: true, // Permet l'envoi des cookies avec les requêtes
 })); 
 // Utile pour traiter les données du formulaire
@@ -32,7 +55,7 @@ app.use(session({
     saveUninitialized: false,
     httpOnly: true,
     cookie: {
-        secure: true, // True si HTTPS
+        secure: false, // True si HTTPS
         sameSite: true,
         maxAge: 1000 * 60 * 60 * 24 // 1 jour
     }
@@ -120,16 +143,9 @@ app.get("/interraction/:id", (req, res) => {
     }
 });
 
-const sslOptions = {
-    key: fs.readFileSync('/etc/letsencrypt/live/loser-land.fr/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/loser-land.fr/fullchain.pem')
-};
-
-const server = https.createServer(sslOptions, app);
-
 // Lance le serveur
 server.listen(PORT, () => {
-    console.log(`https back lancé sur : ${PORT}`);
+    console.log(`Serveur lancé sur le port ${PORT} (${isProduction ? 'HTTPS' : 'HTTP'})`);
 });
 
 

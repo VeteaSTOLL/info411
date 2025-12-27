@@ -1,7 +1,7 @@
 var user;
 
 async function initUser() {
-    await fetch("https://loser-land.fr:3000/session_user", { credentials:'include' })
+    await fetch(`${API_URL}/session_user`, { credentials:'include' })
     .then(response => response.json())
     .then(data => {
         if(data.id){
@@ -35,7 +35,7 @@ function deleteUnusedTags(){
 }
 
 async function import_user (id) {
-    await fetch("https://loser-land.fr:3000/user/"+id, {
+    await fetch(`${API_URL}/user/${id}`, {
         credentials:'include',
         method: 'POST',
         headers: {
@@ -72,7 +72,7 @@ function update_user_table(){
 
 async function get_interraction(id) {
     let res;
-    await fetch("https://loser-land.fr:3000/interraction/"+id, { credentials:'include' })
+    await fetch(`${API_URL}/interraction/${id}`, { credentials:'include' })
     .then(response => response.json())
     .then(data => {
         res = data;
@@ -80,7 +80,7 @@ async function get_interraction(id) {
     return res;
 }
 
-const socket = new WebSocket('wss://loser-land.fr:3000');
+const socket = new WebSocket(WS_URL);
 
 socket.onopen = (event) => {
     (async () => {
