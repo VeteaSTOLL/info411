@@ -20,22 +20,6 @@ const PORT = process.env.PORT_BACK;
 const path = require('path');
 app.use(express.static(path.join(__dirname, '../public')));
 
-// if (isProduction) {
-//     // HTTPS en production
-//     const fs = require('fs');
-//     const https = require('https')
-
-//     const sslOptions = {
-//         key: fs.readFileSync('/etc/letsencrypt/live/loserland2025.tevaphilippe.fr/privkey.pem'),
-//         cert: fs.readFileSync('/etc/letsencrypt/live/loserland2025.tevaphilippe.fr/fullchain.pem')
-//     };  
-//     server = https.createServer(sslOptions, app);
-// } else {
-//     // HTTP en développement
-//     const http = require('http');
-//     server = http.createServer(app);
-// }
-
 const http = require('http');
 const server = http.createServer(app);
 
