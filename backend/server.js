@@ -43,7 +43,7 @@ app.set("trust proxy", 1);
 
 // Utile pour fetch
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'https://loserland2025.tevaphilippe.fr'],
     credentials: true, // Permet l'envoi des cookies avec les requêtes
 })); 
 // Utile pour traiter les données du formulaire
@@ -145,7 +145,7 @@ app.get("/interraction/:id", (req, res) => {
 
 // Lance le serveur
 server.listen(PORT, () => {
-    console.log(`Serveur lancé sur le port ${PORT} (${isProduction ? 'HTTPS' : 'HTTP'})`);
+    console.log(`Serveur lancé sur le port ${PORT}`);
 });
 
 
